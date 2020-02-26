@@ -7,6 +7,7 @@ DEC_SUFFIX="${HELM_SECRETS_DEC_SUFFIX:-.yaml.dec}"
 # Make sure HELM_BIN is set (normally by the helm command)
 HELM_BIN="${HELM_BIN:-helm}"
 
+
 getopt --test > /dev/null
 if [[ $? -ne 4 ]]
 then
@@ -24,7 +25,7 @@ then
     else
     	GNU_GETOPT=0
     fi
-    
+
     if [ "${GNU_GETOPT}" -ne 1 ]; then
     	cat <<EOF
 I’m sorry, "getopt --test" failed in this environment.
@@ -372,7 +373,7 @@ clean() {
 	return
     fi
     local basedir="$1"
-    find "$basedir" -type f -name "secrets*${DEC_SUFFIX}" -exec rm -v {} \;
+    find "$basedir" -type f -name "secrets*${DEC_SUFFIX}" -exec rm {} \;
 }
 
 helm_wrapper() {
@@ -413,7 +414,7 @@ options='$options'
 longoptions='$longoptions'
 EOF
     fi
-    
+
     # parse command line
     local parsed # separate line, otherwise the return value of getopt is ignored
     # if parsing fails, getopt returns non-0, and the shell exits due to "set -e"
@@ -428,7 +429,7 @@ EOF
 	case "$1" in
 	    --)
 		# skip --, and what remains are the cmd args
-		shift 
+		shift
 		break
 		;;
             -f|--values)
@@ -460,7 +461,9 @@ EOF
     ${HELM_BIN} ${TILLER_HOST:+--host "$TILLER_HOST" }"$cmd" $subcmd "$@" "${cmdopts[@]}"
     helm_exit_code=$?
     # cleanup on-the-fly decrypted files
-    [[ ${#decfiles[@]} -gt 0 ]] && rm -v "${decfiles[@]}"
+    if
+
+    [[ ${#decfiles[@]} -gt 0 ]] && rm "${decfiles[@]}"
 }
 
 helm_command() {
